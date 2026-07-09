@@ -1,5 +1,5 @@
-// src/App.js
 import React, { useState } from "react";
+import "./App.css";
 
 const productsData = [
   { id: 1, name: "Laptop", price: 800 },
@@ -14,7 +14,6 @@ export default function App() {
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
-
       if (existingItem) {
         return prevCart.map((item) =>
           item.id === product.id
@@ -22,15 +21,12 @@ export default function App() {
             : item
         );
       }
-
       return [...prevCart, { ...product, quantity: 1 }];
     });
   };
 
   const removeFromCart = (productId) => {
-    setCart((prevCart) =>
-      prevCart.filter((item) => item.id !== productId)
-    );
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
 
   const updateQuantity = (productId, amount) => {
@@ -51,25 +47,20 @@ export default function App() {
   );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Shopping Cart</h1>
+    <div className="cart-app">
+      <h1 className="page-title">🛒 Shopping Cart</h1>
 
       {/* Product List */}
-      <h2>Products</h2>
-      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+      <h2 className="section-title">Products</h2>
+      <div className="product-grid">
         {productsData.map((product) => (
-          <div
-            key={product.id}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              borderRadius: "6px",
-              width: "150px"
-            }}
-          >
-            <h3>{product.name}</h3>
-            <p>${product.price}</p>
-            <button onClick={() => addToCart(product)}>
+          <div key={product.id} className="product-card">
+            <h3 className="product-name">{product.name}</h3>
+            <p className="product-price">{product.price}</p>
+            <button 
+              className="btn btn-primary" 
+              onClick={() => addToCart(product)}
+            >
               Add to Cart
             </button>
           </div>
@@ -77,50 +68,57 @@ export default function App() {
       </div>
 
       {/* Cart */}
-      <h2 style={{ marginTop: "30px" }}>Cart</h2>
+      <h2 className="section-title">Your Cart</h2>
 
-      {cart.length === 0 && <p>Cart is empty</p>}
+      {cart.length === 0 && (
+        <div className="cart-empty">🛍️ Your cart is empty</div>
+      )}
 
-      {cart.map((item) => (
-        <div
-          key={item.id}
-          style={{
-            borderBottom: "1px solid #ddd",
-            padding: "10px 0",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}
-        >
-          <div>
-            <h4>{item.name}</h4>
-            <p>
-              ${item.price} × {item.quantity}
-            </p>
-          </div>
+      {cart.length > 0 && (
+        <div className="cart-list">
+          {cart.map((item) => (
+            <div key={item.id} className="cart-item">
+              <div className="cart-item-info">
+                <span className="cart-item-name">{item.name}</span>
+                <span className="cart-item-detail">
+                  $<span>{item.price}</span> × {item.quantity}
+                </span>
+              </div>
 
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button onClick={() => updateQuantity(item.id, -1)}>
-              -
-            </button>
+              <div className="cart-item-controls">
+                <div className="quantity-group">
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => updateQuantity(item.id, -1)}
+                  >
+                    −
+                  </button>
+                  <span className="quantity-number">{item.quantity}</span>
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => updateQuantity(item.id, 1)}
+                  >
+                    +
+                  </button>
+                </div>
 
-            <span>{item.quantity}</span>
-
-            <button onClick={() => updateQuantity(item.id, 1)}>
-              +
-            </button>
-
-            <button onClick={() => removeFromCart(item.id)}>
-              Remove
-            </button>
-          </div>
+                <button 
+                  className="btn btn-danger" 
+                  onClick={() => removeFromCart(item.id)}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
 
       {/* Total */}
-      <h2 style={{ marginTop: "20px" }}>
-        Total: ${totalPrice.toFixed(2)}
-      </h2>
+      <div className="cart-total">
+        <span className="total-label">Total</span>
+        <span className="total-amount">{totalPrice.toFixed(2)}</span>
+      </div>
     </div>
   );
 }
